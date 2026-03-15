@@ -1,15 +1,16 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AI & ML Assessment API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: ml
+    description: Machine Learning operations
 paths:
   /healthz:
     get:
@@ -24,6 +25,82 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /ml/linear-regression:
+    post:
+      operationId: runLinearRegression
+      tags: [ml]
+      summary: Run Linear Regression
+      description: Fit a simple linear regression model on provided data points
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegressionInput"
+      responses:
+        "200":
+          description: Regression result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegressionResult"
+  /ml/classify:
+    post:
+      operationId: runClassification
+      tags: [ml]
+      summary: Run KNN Classification
+      description: Classify a point using K-Nearest Neighbors on provided training data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClassificationInput"
+      responses:
+        "200":
+          description: Classification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassificationResult"
+  /ml/statistics:
+    post:
+      operationId: computeStatistics
+      tags: [ml]
+      summary: Compute Statistics
+      description: Compute descriptive statistics for a dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatisticsInput"
+      responses:
+        "200":
+          description: Statistics result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatisticsResult"
+  /ml/kmeans:
+    post:
+      operationId: runKMeans
+      tags: [ml]
+      summary: Run K-Means Clustering
+      description: Cluster 2D data points using K-Means algorithm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KMeansInput"
+      responses:
+        "200":
+          description: Clustering result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KMeansResult"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +110,186 @@ components:
           type: string
       required:
         - status
-
+    DataPoint:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+      required:
+        - x
+        - y
+    RegressionInput:
+      type: object
+      properties:
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataPoint"
+      required:
+        - points
+    RegressionResult:
+      type: object
+      properties:
+        slope:
+          type: number
+        intercept:
+          type: number
+        rSquared:
+          type: number
+        predictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataPoint"
+      required:
+        - slope
+        - intercept
+        - rSquared
+        - predictions
+    ClassificationInput:
+      type: object
+      properties:
+        trainingPoints:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+              y:
+                type: number
+              label:
+                type: string
+            required:
+              - x
+              - y
+              - label
+        queryPoint:
+          $ref: "#/components/schemas/DataPoint"
+        k:
+          type: integer
+      required:
+        - trainingPoints
+        - queryPoint
+        - k
+    ClassificationResult:
+      type: object
+      properties:
+        predictedLabel:
+          type: string
+        neighbors:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+              y:
+                type: number
+              label:
+                type: string
+              distance:
+                type: number
+            required:
+              - x
+              - y
+              - label
+              - distance
+      required:
+        - predictedLabel
+        - neighbors
+    StatisticsInput:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: number
+      required:
+        - data
+    StatisticsResult:
+      type: object
+      properties:
+        mean:
+          type: number
+        median:
+          type: number
+        mode:
+          type: number
+          nullable: true
+        stdDev:
+          type: number
+        variance:
+          type: number
+        min:
+          type: number
+        max:
+          type: number
+        count:
+          type: integer
+      required:
+        - mean
+        - median
+        - stdDev
+        - variance
+        - min
+        - max
+        - count
+    KMeansInput:
+      type: object
+      properties:
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataPoint"
+        k:
+          type: integer
+        maxIterations:
+          type: integer
+      required:
+        - points
+        - k
+    ClusteredPoint:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+        cluster:
+          type: integer
+      required:
+        - x
+        - y
+        - cluster
+    Centroid:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+        cluster:
+          type: integer
+      required:
+        - x
+        - y
+        - cluster
+    KMeansResult:
+      type: object
+      properties:
+        clusters:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClusteredPoint"
+        centroids:
+          type: array
+          items:
+            $ref: "#/components/schemas/Centroid"
+        iterations:
+          type: integer
+      required:
+        - clusters
+        - centroids
+        - iterations

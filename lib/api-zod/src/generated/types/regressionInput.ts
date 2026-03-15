@@ -5,7 +5,8 @@
  * AI & ML Assessment API
  * OpenAPI spec version: 0.1.0
  */
+import type { DataPoint } from "./dataPoint";
 
-export interface HealthStatus {
-  status: string;
+export interface RegressionInput {
+  points: DataPoint[];
 }

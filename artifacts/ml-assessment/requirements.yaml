@@ -1,0 +1,13 @@
+packages:
+  "recharts": "Data visualization for ML algorithms"
+  "framer-motion": "Animations and page transitions"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility function to efficiently merge Tailwind CSS classes"
+  "lucide-react": "Icons for UI"
+
+images: []
+
+notes:
+  - "Using API hooks from @workspace/api-client-react directly"
+  - "Styling is built with Tailwind v4 custom properties in index.css"
+  - "Using Recharts for all data visualization"

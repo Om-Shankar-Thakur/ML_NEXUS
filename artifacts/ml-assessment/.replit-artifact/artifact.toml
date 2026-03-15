@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "AI & Machine Learning Assessment"
+version = "1.0.0"
+id = "artifacts/ml-assessment"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 22314
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/ml-assessment run dev"
+
+[services.env]
+PORT = "22314"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/ml-assessment", "run", "build"]
+publicDir = "artifacts/ml-assessment/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
